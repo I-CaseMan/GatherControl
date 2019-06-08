@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Oxide.Plugins
 {
-    [Info("GatherControl", "CaseMan", "1.6.0", ResourceId = 2477)]
+    [Info("GatherControl", "CaseMan", "1.6.1", ResourceId = 2477)]
     [Description("Control gather rates by day and night with permissions")]
 
     class GatherControl : RustPlugin
@@ -148,7 +148,7 @@ namespace Oxide.Plugins
 				["InvalidSyntax"] = "Invalid syntax! Use: showrate <name/ID>",
 				["NoPlayer"] = "Player not found!",
 				["NoPermission"] = "You don't have the permission to use this command",
-				["AdminMode"] = "This is <color=lime>{0}</color> gather type.\nName: <color=lime>{1}</color>.\nItem short name: <color=lime>{2}</color>",
+				["AdminMode"] = "This is <color=#CCFF00>{0}</color> gather type.\nName: <color=#CCFF00>{1}</color>.\nItem short name: <color=#CCFF00>{2}</color>",
             }, this);
 			lang.RegisterMessages(new Dictionary<string, string>
             {
@@ -167,7 +167,7 @@ namespace Oxide.Plugins
 				["InvalidSyntax"] = "Неправильный синтаксис. Используйте: showrate <имя/ID>",
 				["NoPlayer"] = "Игрок не найден!",
 				["NoPermission"] = "У вас недостаточно прав для выполнения этой команды",
-				["AdminMode"] = "This is <color=lime>{0}</color> gather type.\nName: <color=lime>{1}</color>.\nItem short name: <color=lime>{2}</color>",
+				["AdminMode"] = "This is <color=#CCFF00>{0}</color> gather type.\nName: <color=#CCFF00>{1}</color>.\nItem short name: <color=#CCFF00>{2}</color>",
             }, this, "ru");
         }
         #endregion
