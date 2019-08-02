@@ -7,16 +7,15 @@ using System.Linq;
 
 namespace Oxide.Plugins
 {
-    [Info("GatherControl", "CaseMan", "1.6.1", ResourceId = 2477)]
+    [Info("GatherControl", "CaseMan", "1.7.0", ResourceId = 2477)]
     [Description("Control gather rates by day and night with permissions")]
 
     class GatherControl : RustPlugin
     {	
 		#region Variables
 	    [PluginReference]
-        Plugin GUIAnnouncements;
-		
-		static GatherControl GC = null;
+        Plugin GUIAnnouncements;		
+
 		bool IsDay;	
 		bool UseZeroIndexForDefaultGroup;
 		bool UseMessageBroadcast;
@@ -29,6 +28,8 @@ namespace Oxide.Plugins
 		float Sunset;
 		float DayRateMultStaticQuarry;
 		float NightRateMultStaticQuarry;
+		float DayRateMultExcavator;	
+		float NightRateMultExcavator;
 		string PLPerm = "gathercontrol.AllowChatCommand";
 		string AdmPerm = "gathercontrol.AllowConsoleCommand";
 		string BypassPerm = "gathercontrol.bypass";
@@ -46,13 +47,13 @@ namespace Oxide.Plugins
             public float DayRateMultResource;			
 			public float DayRateMultResourceBonus;			
 			public float DayRateMultResourceHQM;
-			public float DayRateMultCropGather;			
+			public float DayRateMultCropGather;		
 			public float NightRateMultQuarry;			
 			public float NightRateMultPickup;			           
             public float NightRateMultResource;			
 			public float NightRateMultResourceBonus;			
 			public float NightRateMultResourceHQM;
-			public float NightRateMultCropGather;			
+			public float NightRateMultCropGather;
 			public Dictionary<string, string> CustomRateMultQuarry = new Dictionary<string, string>();
 			public Dictionary<string, string> CustomRateMultPickup = new Dictionary<string, string>();
 			public Dictionary<string, string> CustomRateMultResource = new Dictionary<string, string>();
@@ -124,6 +125,8 @@ namespace Oxide.Plugins
 			Config["Sunset"] = Sunset = GetConfig("Sunset", 19);
 			Config["DayRateMultStaticQuarry"] = DayRateMultStaticQuarry = GetConfig("DayRateMultStaticQuarry", 1);
 			Config["NightRateMultStaticQuarry"] = NightRateMultStaticQuarry = GetConfig("NightRateMultStaticQuarry", 1);
+			Config["DayRateMultExcavator"] = DayRateMultExcavator = GetConfig("DayRateMultExcavator", 1);
+			Config["NightRateMultExcavator"] = NightRateMultExcavator = GetConfig("NightRateMultExcavator", 1);
 			Config["AdminMode"] = AdminMode = GetConfig("AdminMode", false);
 			SaveConfig();
 		}
@@ -275,6 +278,10 @@ namespace Oxide.Plugins
 				if(permData.PermissionsGroups[gr].CustomRateMultQuarry.ContainsKey(item.info.shortname)) CustomList(item, permData.PermissionsGroups[gr].CustomRateMultQuarry[item.info.shortname]);
 				else GatherMultiplier(item, permData.PermissionsGroups[gr].DayRateMultQuarry, permData.PermissionsGroups[gr].NightRateMultQuarry);
 			}	
+		}
+		private void OnExcavatorGather(ExcavatorArm excavator, Item item)
+		{
+			GatherMultiplier(item, DayRateMultExcavator, NightRateMultExcavator);
 		}
 		void OnCropGather(PlantEntity plant, Item item, BasePlayer player)
 		{

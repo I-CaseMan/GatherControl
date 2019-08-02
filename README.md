@@ -26,6 +26,10 @@
 
 **NightRateMultStaticQuarry** - night multiplier for static quarry mining rating
 
+**DayRateMultExcavator** - day multiplier for excavator mining rating
+
+**NightRateMultExcavator** - night multiplier for excavator mining rating
+
 **Sunrise** - start time of the day
 
 **Sunset** - start time of the night
@@ -67,7 +71,9 @@ where **/**  - separator
 ```json
 {
   "AdminCanLoot": false,
+  "DayRateMultExcavator": 1.0,
   "DayRateMultStaticQuarry": 1.0,
+  "NightRateMultExcavator": 1.0,
   "NightRateMultStaticQuarry": 1.0,
   "Sunrise": 7.0,
   "Sunset": 19.0,
