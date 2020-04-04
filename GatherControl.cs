@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Oxide.Plugins
 {
-    [Info("GatherControl", "CaseMan", "1.8.0", ResourceId = 2477)]
+    [Info("GatherControl", "CaseMan", "1.8.1", ResourceId = 2477)]
     [Description("Control gather rates by day and night with permissions")]
 
     class GatherControl : RustPlugin
@@ -103,7 +103,7 @@ namespace Oxide.Plugins
 				Interface.Oxide.DataFileSystem.WriteObject("GatherControl", permData);
 			}			
 		}
-		void OnPlayerInit(BasePlayer player)
+        void OnPlayerConnected(BasePlayer player)
 		{
 			CheckPlayer(player);
 		}
@@ -216,12 +216,6 @@ namespace Oxide.Plugins
 			float day, night;
 			ParseFromString(str, out day, out night);
 			GatherMultiplier(item, day, night);
-		}	
-		private void CustomListQuarry(ResourceDepositManager.ResourceDeposit.ResourceDepositEntry item, string str)
-		{
-			float day, night;
-			ParseFromString(str, out day, out night);
-			GatherMultiplierQuarry(item, day, night);
 		}
 		private void OnDispenserGather(ResourceDispenser dispenser, BaseEntity entity, Item item)
         {			
@@ -260,16 +254,11 @@ namespace Oxide.Plugins
 				else GatherMultiplier(item, permData.PermissionsGroups[gr].DayRateMultPickup, permData.PermissionsGroups[gr].NightRateMultPickup);
 			}			
 		}
-		void OnQuarryGather(MiningQuarry quarry, List<ResourceDepositManager.ResourceDeposit.ResourceDepositEntry> itemslist)
+		void OnQuarryGather(MiningQuarry quarry, Item item)
 		{
-			ResourceDepositManager.ResourceDeposit.ResourceDepositEntry item;
 			if(quarry.OwnerID == 0)
 			{
-				for (var i = 0; i < itemslist.Count; i++)
-				{
-					item = itemslist[i];
-					GatherMultiplierQuarry(item, DayRateMultStaticQuarry, NightRateMultStaticQuarry);
-				}
+				GatherMultiplier(item, DayRateMultStaticQuarry, NightRateMultStaticQuarry);
 				return;				
 			}
 			int gr=-1;
@@ -286,19 +275,15 @@ namespace Oxide.Plugins
 			}
 			if(gr >= 0) 
 			{
-				for (var i = 0; i < itemslist.Count; i++)
-				{
-					item = itemslist[i];
-					if(permData.PermissionsGroups[gr].CustomRateMultQuarry.ContainsKey(item.type.shortname)) CustomListQuarry(item, permData.PermissionsGroups[gr].CustomRateMultQuarry[item.type.shortname]);
-					else GatherMultiplierQuarry(item, permData.PermissionsGroups[gr].DayRateMultQuarry, permData.PermissionsGroups[gr].NightRateMultQuarry);
-				}
+				if(permData.PermissionsGroups[gr].CustomRateMultQuarry.ContainsKey(item.info.shortname)) CustomList(item, permData.PermissionsGroups[gr].CustomRateMultQuarry[item.info.shortname]);
+				else GatherMultiplier(item, permData.PermissionsGroups[gr].DayRateMultQuarry, permData.PermissionsGroups[gr].NightRateMultQuarry);				
 			}	
 		}
 		private void OnExcavatorGather(ExcavatorArm excavator, Item item)
 		{
 			GatherMultiplier(item, DayRateMultExcavator, NightRateMultExcavator);
 		}
-		void OnGrowableGather(GrowableEntity plant, Item item, BasePlayer player)
+		void OnGrowableGathered(GrowableEntity plant, Item item, BasePlayer player)
 		{
 			if(player == null) return;
 			if(AdminMode)
@@ -319,11 +304,6 @@ namespace Oxide.Plugins
 			return -1;	
         }
 		private void GatherMultiplier(Item item, float daymult, float nightmult) 
-        {			
-			if(IsDay) item.amount = (int)(item.amount * daymult); 
-			else item.amount = (int)(item.amount * nightmult); 
-        }
-		private void GatherMultiplierQuarry(ResourceDepositManager.ResourceDeposit.ResourceDepositEntry item, float daymult, float nightmult) 
         {			
 			if(IsDay) item.amount = (int)(item.amount * daymult); 
 			else item.amount = (int)(item.amount * nightmult); 
